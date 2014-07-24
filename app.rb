@@ -11,15 +11,19 @@ class App < Sinatra::Base
 
  register Sinatra::ConfigFile
 
-  # Configuration
-  #username   = ENV["GMAIL_USERNAME"]
-  #password   = ENV["GMAIL_PASSWORD"]
-
   config_file 'config.yml'
 
   expiration = 60 * 5; # 5 minutes
 
   redis = Redis.new
+
+  def calculate_status(points)
+
+    return "red"    if points > 9
+    return "yellow" if points > 3
+    return "green"
+
+  end
 
   get '/' do
 
@@ -40,13 +44,7 @@ class App < Sinatra::Base
 
     points = (email_count - unread_count) + unread_count * 2
 
-    if points > 9
-      status = "red"
-    elsif points > 3
-      status = "yellow"
-    else
-      status = "green"
-    end
+    status = calculate_status(points)
 
     content_type :json
     { :status => status, :points => points, :total => email_count, :unread => unread_count }.to_json
