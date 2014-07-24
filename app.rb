@@ -51,11 +51,13 @@ class App < Sinatra::Base
 
   end
 
-  get '/reset' do
+  get "/reset#{settings.reset_secret_path}" do
+
     redis.DEL("email_count")
     redis.DEL("unread_count")
 
     redirect "/"
+
   end
 
 end
