@@ -11,7 +11,7 @@ class App < Sinatra::Base
 
  register Sinatra::ConfigFile
 
-  config_file 'config.yml'
+  config_file './config.yml'
 
   expiration = 60 * 5; # 5 minutes
 
@@ -29,7 +29,7 @@ class App < Sinatra::Base
 
     if !redis[:unread_count] || !redis[:email_count]
 
-      gmail = Gmail.new(username, password) 
+      gmail = Gmail.new(settings.username, settings.password) 
 
       redis[:email_count]  = gmail.inbox.count
       redis[:unread_count] = gmail.inbox.count(:unread)
